@@ -1,0 +1,90 @@
+------Bảng users------
+-id(PK) 				INT
+-google_id				VARCHAR(255)
+-email(UNIQUE)			VARCHAR(255)
+-password				VARCHAR(255)
+-display_name			VARCHAR(100)
+-role					ENUM('reader', 'author', 'admin')
+-is_verified			BOOLEAN
+-verification_token		VARCHAR(255)
+-reset_password_token	VARCHAR(255)
+-reset_token_expiry		DATETIME  			Thời hạn token reset
+-created_at	TIMESTAMP	Ngày tạo
+-updated_at	TIMESTAMP	Ngày cập nhật
+
+------Bảng articles------
+-id (PK)				INT
+-title					VARCHAR(255)
+-slug					VARCHAR(255) UNIQUE
+-content				TEXT
+-thumbnail				VARCHAR(255)
+-author_id (FK)			INT
+-created_at				TIMESTAMP
+-updated_at				TIMESTAMP
+
+------Bảng comments------
+-id (PK)				INT
+-content				TEXT
+-user_id (FK)			INT
+-article_id (FK)		INT
+-parent_id (FK)			INT
+-created_at				TIMESTAMP
+-updated_at				TIMESTAMP
+
+------Bảng categories------
+-id (PK) 				INT
+-name 					VARCHAR(255)
+-parent_id				INT
+
+------Bảng refresh_tokens------
+-id (PK)				INT
+-user_id (FK)			INT
+-token (UNIQUE)			VARCHAR(255)
+-expires_at				DATETIME			Thời hạn hiệu lực
+-revoked				BOOLEAN				Đã bị thu hồi? (mặc định: false)
+
+API
+------Authentication------ (HIẾU)
+/auth/google			GET					Đăng nhập bằng Google				Public
+/auth/google/callback	GET					Xử lý callback Google				Public
+/auth/register			POST				Đăng ký bằng email					Public
+/auth/login				POST				Đăng nhập bằng email				Public
+/auth/verify-email		POST				Xác thực email						Public
+/auth/resend-verification	POST			Gửi lại email xác thực				Public
+/auth/forgot-password	POST				Gửi email reset mật khẩu			Public
+/auth/reset-password	POST				Đặt lại mật khẩu					Public
+/auth/refresh-token		POST				Lấy accessToken mới bằng refreshToken	Public
+/auth/logout			POST				Đăng xuất							Đã đăng nhập
+/auth/me				GET					Lấy thông tin user hiện tại			Đã đăng nhập
+
+------Users------ (CHINH)
+/users					GET					Lấy danh sách user (phân trang)		Admin
+/users/{id}				GET					Lấy thông tin user					Admin
+/users/{id}/role		PUT					Thay đổi vai trò user				Admin
+/users/{id}				DELETE				Xóa user							Admin
+
+------Articles------ (CHINH)
+/articles				GET					Lấy danh sách bài đã publish		Public
+/articles/{slug}		GET					Lấy chi tiết bài viết				Public
+/articles				POST				Tạo bài viết mới					Author/Admin
+/articles/{id}			DELETE				Xóa bài viết						Tác giả của bài/Admin
+
+------Comments------ (HIẾU)
+/articles/{slug}/comments	GET				Lấy bình luận bài viết				Public
+/articles/{slug}/comments	POST			Thêm bình luận						Đã đăng nhập
+/comments/{id}				DELETE			Xóa bình luận						Người tạo comment/Admin
+
+------Admin------ (CHINH)
+/admin/articles			GET					Lấy tất cả bài viết (kể cả draft)	Admin
+/admin/comments			GET					Lấy tất cả bình luận				Admin
+
+
+Backend: Node.js (Express)
+Database: MySQL
+Authentication: JWT + Google OAuth 2.0
+Email: SendGrid, AWS SES, hoặc Nodemailer
+Deploy: Docker + AWS EC2 hoặc Heroku
+
+
+
+
