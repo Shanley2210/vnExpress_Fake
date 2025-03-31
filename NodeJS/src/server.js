@@ -1,21 +1,48 @@
+require('dotenv').config();
+require('./config/passport');
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const passport = require('passport');
+const session = require('express-session');
+const { sequelize } = require('./models');
 
 const app = express();
 
-// Middleware
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true
+    })
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+sequelize
+    .sync()
+    .then(() => console.log('Cơ sở dữ liệu đã được đồng bộ hóa'))
+    .catch((err) => console.error('Lỗi đồng bộ cơ sở dữ liệu:', err));
+
+// Routes
+app.use('/api/auth', require('./routes/auth.route'));
+
+//
+//
+//
+//
+//
+//
 // Định nghĩa route mẫu
 app.get('/', (req, res) => {
     res.send('Hello, Express!');
 });
 
-// Nhận port từ biến môi trường hoặc mặc định 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server đang chạy trên port ${PORT}`);
+    console.log(`Server đang chạy trên port: ${PORT}`);
 });

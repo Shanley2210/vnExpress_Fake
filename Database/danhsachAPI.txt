@@ -19,6 +19,7 @@
 -content				TEXT
 -thumbnail				VARCHAR(255)
 -author_id (FK)			INT
+-categories_id(FK) 		INT
 -created_at				TIMESTAMP
 -updated_at				TIMESTAMP
 
@@ -45,38 +46,38 @@
 
 API
 ------Authentication------ (HIẾU)
-/auth/google			GET					Đăng nhập bằng Google				Public
-/auth/google/callback	GET					Xử lý callback Google				Public
-/auth/register			POST				Đăng ký bằng email					Public
-/auth/login				POST				Đăng nhập bằng email				Public
-/auth/verify-email		POST				Xác thực email						Public
-/auth/resend-verification	POST			Gửi lại email xác thực				Public
-/auth/forgot-password	POST				Gửi email reset mật khẩu			Public
-/auth/reset-password	POST				Đặt lại mật khẩu					Public
-/auth/refresh-token		POST				Lấy accessToken mới bằng refreshToken	Public
-/auth/logout			POST				Đăng xuất							Đã đăng nhập
-/auth/me				GET					Lấy thông tin user hiện tại			Đã đăng nhập
+api/auth/google			GET					Đăng nhập bằng Google				Public
+api/auth/google/callback	GET					Xử lý callback Google				Public
+api/auth/register			POST				Đăng ký bằng email					Public
+api/auth/login				POST				Đăng nhập bằng email				Public
+api/auth/verify-email		POST				Xác thực email						Public
+api/auth/resend-verification	POST			Gửi lại email xác thực				Public
+api/auth/forgot-password	POST				Gửi email reset mật khẩu			Public
+api/auth/reset-password	POST				Đặt lại mật khẩu					Public
+api/auth/refresh-token		POST				Lấy accessToken mới bằng refreshToken	Public
+api/auth/logout			POST				Đăng xuất							Đã đăng nhập
+api/auth/me				GET					Lấy thông tin user hiện tại			Đã đăng nhập
 
 ------Users------ (CHINH)
-/users					GET					Lấy danh sách user (phân trang)		Admin
-/users/{id}				GET					Lấy thông tin user					Admin
-/users/{id}/role		PUT					Thay đổi vai trò user				Admin
-/users/{id}				DELETE				Xóa user							Admin
+api/users					GET					Lấy danh sách user (phân trang)		Admin
+api/users/{id}				GET					Lấy thông tin user					Admin
+api/users/{id}/role		PUT					Thay đổi vai trò user				Admin
+api/users/{id}				DELETE				Xóa user							Admin
 
 ------Articles------ (CHINH)
-/articles				GET					Lấy danh sách bài đã publish		Public
-/articles/{slug}		GET					Lấy chi tiết bài viết				Public
-/articles				POST				Tạo bài viết mới					Author/Admin
-/articles/{id}			DELETE				Xóa bài viết						Tác giả của bài/Admin
+api/articles				GET					Lấy danh sách bài đã publish		Public
+api/articles/{slug}		GET					Lấy chi tiết bài viết				Public
+api/articles				POST				Tạo bài viết mới					Author/Admin
+api/articles/{id}			DELETE				Xóa bài viết						Tác giả của bài/Admin
 
 ------Comments------ (HIẾU)
-/articles/{slug}/comments	GET				Lấy bình luận bài viết				Public
-/articles/{slug}/comments	POST			Thêm bình luận						Đã đăng nhập
-/comments/{id}				DELETE			Xóa bình luận						Người tạo comment/Admin
+api/articles/{slug}/comments	GET				Lấy bình luận bài viết				Public
+api/articles/{slug}/comments	POST			Thêm bình luận						Đã đăng nhập
+api/comments/{id}				DELETE			Xóa bình luận						Người tạo comment/Admin
 
 ------Admin------ (CHINH)
-/admin/articles			GET					Lấy tất cả bài viết (kể cả draft)	Admin
-/admin/comments			GET					Lấy tất cả bình luận				Admin
+api/admin/articles			GET					Lấy tất cả bài viết (kể cả draft)	Admin
+api/admin/comments			GET					Lấy tất cả bình luận				Admin
 
 
 Backend: Node.js (Express)
@@ -86,5 +87,32 @@ Email: SendGrid, AWS SES, hoặc Nodemailer
 Deploy: Docker + AWS EC2 hoặc Heroku
 
 
-
+src/
+├── config/
+│   ├── db.js
+│   ├── passport.js
+│   └── email.js
+├── controllers/
+│   ├── auth.controller.js
+│   ├── user.controller.js
+│   ├── article.controller.js
+│   ├── comment.controller.js
+│   └── admin.controller.js
+├── middlewares/
+│   ├── auth.js
+│   ├── roles.js
+│   └── errorHandler.js
+├── models/
+│   ├── user.model.js
+│   ├── article.model.js
+│   ├── comment.model.js
+│   ├── category.model.js
+│   └── refreshToken.model.js
+├── routes/
+│   ├── auth.route.js
+│   ├── user.route.js
+│   ├── article.route.js
+│   ├── comment.route.js
+│   └── admin.route.js
+└── server.js
 
