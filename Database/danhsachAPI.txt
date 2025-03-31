@@ -46,34 +46,34 @@
 
 API
 ------Authentication------ (HIẾU)
-api/auth/google			GET					Đăng nhập bằng Google				Public
-api/auth/google/callback	GET					Xử lý callback Google				Public
-api/auth/register			POST				Đăng ký bằng email					Public
-api/auth/login				POST				Đăng nhập bằng email				Public
-api/auth/verify-email		POST				Xác thực email						Public
-api/auth/resend-verification	POST			Gửi lại email xác thực				Public
-api/auth/forgot-password	POST				Gửi email reset mật khẩu			Public
-api/auth/reset-password	POST				Đặt lại mật khẩu					Public
-api/auth/refresh-token		POST				Lấy accessToken mới bằng refreshToken	Public
-api/auth/logout			POST				Đăng xuất							Đã đăng nhập
-api/auth/me				GET					Lấy thông tin user hiện tại			Đã đăng nhập
+api/auth/google				GET					Đăng nhập bằng Google				Public
+api/auth/google/callback	GET					Xử lý callback Google				Public				(Xong)
+api/auth/register			POST				Đăng ký bằng email					Public				(Xong)
+api/auth/login				POST				Đăng nhập bằng email				Public				(Xong)
+api/auth/verify-email		POST				Xác thực email						Public				(Xong)
+api/auth/resend-verificationPOST				Gửi lại email xác thực				Public				(Xong)
+api/auth/forgot-password	POST				Gửi email reset mật khẩu			Public				(Xong)
+api/auth/reset-password		POST				Đặt lại mật khẩu					Public				(Xong)
+api/auth/refresh-token		POST				Lấy accessToken mới bằng refreshToken	Public			(Xong)
+api/auth/logout				POST				Đăng xuất							Đã đăng nhập		(Xong)
+api/auth/me					GET					Lấy thông tin user hiện tại			Đã đăng nhập		(Xong)
 
 ------Users------ (CHINH)
 api/users					GET					Lấy danh sách user (phân trang)		Admin
 api/users/{id}				GET					Lấy thông tin user					Admin
-api/users/{id}/role		PUT					Thay đổi vai trò user				Admin
+api/users/{id}/role			PUT					Thay đổi vai trò user				Admin
 api/users/{id}				DELETE				Xóa user							Admin
 
 ------Articles------ (CHINH)
 api/articles				GET					Lấy danh sách bài đã publish		Public
-api/articles/{slug}		GET					Lấy chi tiết bài viết				Public
+api/articles/{slug}			GET					Lấy chi tiết bài viết				Public
 api/articles				POST				Tạo bài viết mới					Author/Admin
 api/articles/{id}			DELETE				Xóa bài viết						Tác giả của bài/Admin
 
 ------Comments------ (HIẾU)
-api/articles/{slug}/comments	GET				Lấy bình luận bài viết				Public
-api/articles/{slug}/comments	POST			Thêm bình luận						Đã đăng nhập
-api/comments/{id}				DELETE			Xóa bình luận						Người tạo comment/Admin
+api/articles/{slug}/comments	GET				Lấy bình luận bài viết				Public						(Xong)
+api/articles/{slug}/comments	POST			Thêm bình luận						Đã đăng nhập				(Xong)
+api/comments/{id}				DELETE			Xóa bình luận						Người tạo comment/Admin		(Xong)
 
 ------Admin------ (CHINH)
 api/admin/articles			GET					Lấy tất cả bài viết (kể cả draft)	Admin

@@ -8,7 +8,7 @@ const RefreshToken = sequelize.define(
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'Users',
+                model: 'User',
                 key: 'id'
             }
         },
@@ -27,6 +27,7 @@ const RefreshToken = sequelize.define(
         }
     },
     {
+        tableName: 'refresh_tokens',
         timestamps: false
     }
 );

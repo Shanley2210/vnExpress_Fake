@@ -30,17 +30,10 @@ sequelize
 
 // Routes
 app.use('/api/auth', require('./routes/auth.route'));
+app.use('/api', require('./routes/comment.route'));
 
 //
 //
-//
-//
-//
-//
-// Định nghĩa route mẫu
-app.get('/', (req, res) => {
-    res.send('Hello, Express!');
-});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
