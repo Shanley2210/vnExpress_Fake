@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: localhost:3306
--- Thời gian đã tạo: Th3 31, 2025 lúc 04:09 AM
+-- Thời gian đã tạo: Th4 02, 2025 lúc 05:25 AM
 -- Phiên bản máy phục vụ: 8.0.30
 -- Phiên bản PHP: 8.1.10
 
@@ -110,10 +110,10 @@ INSERT INTO `comments` (`id`, `content`, `user_id`, `article_id`, `parent_id`, `
 (4, 'Tôi không đồng ý với một số điểm được đề cập.', 10, 3, NULL, '2025-03-31 04:06:54', '2025-03-31 04:06:54'),
 (5, 'Bài viết được viết rất tốt!', 1, 4, NULL, '2025-03-31 04:06:54', '2025-03-31 04:06:54'),
 (6, 'Đây chính là những gì tôi đang tìm kiếm.', 4, 5, NULL, '2025-03-31 04:06:54', '2025-03-31 04:06:54'),
-(7, 'Quan điểm thú vị.', 7, 6, NULL, '2025-03-31 04:06:54', '2025-03-31 04:06:54'),
-(8, 'Tôi có một câu hỏi liên quan đến vấn đề này.', 10, 7, NULL, '2025-03-31 04:06:54', '2025-03-31 04:06:54'),
-(9, 'Thông tin này giúp ích rất nhiều cho tôi.', 1, 8, NULL, '2025-03-31 04:06:54', '2025-03-31 04:06:54'),
-(10, 'Cảm ơn vì đã chia sẻ!', 4, 9, NULL, '2025-03-31 04:06:54', '2025-03-31 04:06:54');
+(7, 'Quan điểm thú vị.', 7, 6, 1, '2025-03-31 04:06:54', '2025-03-31 14:54:32'),
+(8, 'Tôi có một câu hỏi liên quan đến vấn đề này.', 10, 7, 1, '2025-03-31 04:06:54', '2025-03-31 14:54:27'),
+(9, 'Thông tin này giúp ích rất nhiều cho tôi.', 1, 8, 1, '2025-03-31 04:06:54', '2025-03-31 14:54:29'),
+(10, 'Cảm ơn vì đã chia sẻ!', 4, 9, 9, '2025-03-31 04:06:54', '2025-03-31 14:54:42');
 
 -- --------------------------------------------------------
 
@@ -134,16 +134,11 @@ CREATE TABLE `refresh_tokens` (
 --
 
 INSERT INTO `refresh_tokens` (`id`, `user_id`, `token`, `expires_at`, `revoked`) VALUES
-(1, 1, 'token_1', '2025-12-31 23:59:59', 0),
-(2, 2, 'token_2', '2025-12-31 23:59:59', 0),
-(3, 3, 'token_3', '2025-12-31 23:59:59', 0),
-(4, 4, 'token_4', '2025-12-31 23:59:59', 0),
-(5, 5, 'token_5', '2025-12-31 23:59:59', 0),
-(6, 6, 'token_6', '2025-12-31 23:59:59', 0),
-(7, 7, 'token_7', '2025-12-31 23:59:59', 0),
-(8, 8, 'token_8', '2025-12-31 23:59:59', 0),
-(9, 9, 'token_9', '2025-12-31 23:59:59', 0),
-(10, 10, 'token_10', '2025-12-31 23:59:59', 0);
+(15, 14, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NDM0MjgxOTEsImV4cCI6MTc0NDAzMjk5MX0.FqSE0N-EOH1fBV_k26MXupPk1d0y0bZrAPP2_hdqZJQ', '2025-04-07 13:36:31', 1),
+(16, 14, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NDM0MzAxMDQsImV4cCI6MTc0NDAzNDkwNH0.kr_oQp_uQfi0W4P_i6u5fhmp2D6mB6sCZt42QhnGuhU', '2025-04-07 14:08:24', 0),
+(17, 14, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NDM0MzI5NTYsImV4cCI6MTc0NDAzNzc1Nn0.Ag0ItnvzxTQcDeQzHe-HzTQgVHYjWatzJgMmtIYEu-g', '2025-04-07 14:55:56', 0),
+(18, 14, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NDM0MzM5ODYsImV4cCI6MTc0NDAzODc4Nn0.20M2H_3wopbApSrOoQw9vWdkojF2kFkvVVtYTqZ88Ag', '2025-04-07 15:13:06', 0),
+(19, 14, 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NDM1NzE0NTksImV4cCI6MTc0NDE3NjI1OX0.YJOtm3JJBpl3hkpb9FXrv8cbuMyBheicQi1dDJNR_xM', '2025-04-09 05:24:19', 0);
 
 -- --------------------------------------------------------
 
@@ -180,7 +175,11 @@ INSERT INTO `users` (`id`, `google_id`, `email`, `password`, `display_name`, `ro
 (7, 'google_7', 'buituan@example.com', 'hashed_password_7', 'Bùi Tuấn K', 'reader', 0, 'token_7', NULL, NULL, '2025-03-31 04:05:38', '2025-03-31 04:05:38'),
 (8, 'google_8', 'doanminh@example.com', 'hashed_password_8', 'Đoàn Minh L', 'author', 1, NULL, NULL, NULL, '2025-03-31 04:05:38', '2025-03-31 04:05:38'),
 (9, 'google_9', 'ngothithu@example.com', 'hashed_password_9', 'Ngô Thị Thu M', 'admin', 1, NULL, NULL, NULL, '2025-03-31 04:05:38', '2025-03-31 04:05:38'),
-(10, 'google_10', 'truongvan@example.com', 'hashed_password_10', 'Trương Văn N', 'reader', 0, 'token_10', NULL, NULL, '2025-03-31 04:05:38', '2025-03-31 04:05:38');
+(10, 'google_10', 'truongvan@example.com', 'hashed_password_10', 'Trương Văn N', 'reader', 0, 'token_10', NULL, NULL, '2025-03-31 04:05:38', '2025-03-31 04:05:38'),
+(11, '110682636650495845528', 'nguyenhieushanley2210@gmail.com', NULL, 'Nguyễn Hiếu [Shanley]', 'reader', 1, NULL, NULL, NULL, '2025-03-31 05:38:17', '2025-03-31 05:38:17'),
+(12, NULL, 'test@example.com', '$2b$10$KhB9ldxyk.KbG.bEZi./tuW6xwcXEBL9nmLjCaRJrquMcUjxC19DC', 'Test User', 'reader', 0, '3ed29f6a3b11b3076e9f0c959984e42d3e4ef947e100cd497dc54b87153900dc', '79a32b0469f4831785c66386bf677387767574f3ba154a6e732ac19427531c1b', '2025-03-31 13:02:45', '2025-03-31 08:50:03', '2025-03-31 12:02:45'),
+(13, NULL, 'nguyenhieushanley.hoyo@gmail.com', '$2b$10$AWpl1l6X5E.qs/WxZpEnb.ByPRHyJurmUSiwVbbUlxosTRR1D/mz6', 'Test User', 'reader', 0, '1e17c457f1362c64d6267d1adbd71895baea2d19fbebf9b9e4d360a54198c40d', NULL, NULL, '2025-03-31 08:50:46', '2025-03-31 12:31:48'),
+(14, NULL, 'test1@example.com', '$2b$10$4u9QhqfGvx7I9KSK/2Frl.eB8grISEwdDioFchd7cxdcuVtyYdVwO', 'Test User', 'reader', 1, NULL, 'a7938dba3973ab211de81f152a4bf92eaaad4759d8ba41e87077f6bbf49c53de', '2025-03-31 13:02:28', '2025-03-31 08:57:50', '2025-03-31 12:02:28');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -246,19 +245,19 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT cho bảng `comments`
 --
 ALTER TABLE `comments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT cho bảng `refresh_tokens`
 --
 ALTER TABLE `refresh_tokens`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
