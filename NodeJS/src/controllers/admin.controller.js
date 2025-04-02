@@ -17,6 +17,7 @@ exports.getAllComments = async (req, res) => {
             include: [
                 {
                     model: User,
+                    as: 'user',
                     attributes: ['id', 'email']
                 },
                 {
@@ -24,11 +25,13 @@ exports.getAllComments = async (req, res) => {
                     as: 'replies', 
                     include: {
                         model: User,
+                        as: 'user',
                         attributes: ['id', 'email']
                     }
                 },
                 {
                     model: Article,
+                    as: 'article',
                     attributes: ['id']
                 }
             ],

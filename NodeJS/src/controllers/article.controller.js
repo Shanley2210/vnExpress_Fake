@@ -111,22 +111,57 @@ exports.createArticle = async (req, res) => {
 
 // Xóa bài viết
 exports.deleteArticle = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params;  
+    const user = req.user;      
 
     try {
-        const article = await Article.findByPk(id);
+        // Tìm bài viết kèm theo thông tin tác giả
+        const article = await Article.findOne({
+            where: { id },
+            include: [
+                {
+                    model: User,
+                    as: 'author',
+                    attributes: ['id', 'role']
+                }
+            ]
+        });
 
         if (!article) {
-            return res.status(404).json({ message: 'Bài viết không tồn tại' });
+            return res.status(404).json({
+                errCode: 1,
+                errMessage: 'Không tìm thấy bài viết'
+            });
         }
 
-        if (article.author_id !== req.user.id && req.user.role !== 'admin') {
-            return res.status(403).json({ message: 'Bạn không có quyền xóa bài viết này' });
+        // Kiểm tra quyền xóa bài viết
+        if (article.author.id !== user.userId && user.role !== 'admin') {
+            return res.status(403).json({
+                errCode: 2,
+                errMessage: 'Bạn không có quyền xóa bài viết này'
+            });
         }
 
-        await article.destroy();
-        return res.status(200).json({ message: 'Bài viết đã được xóa' });
-    } catch (err) {
-        return res.status(500).json({ message: "Lỗi server", error: err.message });
+        // Xóa các bình luận có liên quan đến bài viết
+        await Comment.destroy({
+            where: { article_id: id }
+        });
+
+        // Xóa bài viết
+        await Article.destroy({
+            where: { id }
+        });
+
+        return res.status(200).json({
+            errCode: 0,
+            errMessage: 'Bài viết và các bình luận đã được xóa thành công'
+        });
+
+    } catch (error) {
+        console.error('Lỗi khi xóa bài viết:', error);
+        return res.status(500).json({
+            errCode: 3,
+            errMessage: 'Lỗi server, không thể xóa bài viết'
+        });
     }
 };
