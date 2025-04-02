@@ -3,8 +3,9 @@ const {
     getAllArticles,
     getAllComments
 } = require('../controllers/admin.controller');
+const authenticateToken = require('../middlewares/authenticateToken');
 
-router.get('/articles', getAllArticles);  
-router.get('/comments', getAllComments);  
+router.get('/articles', authenticateToken, getAllArticles);  
+router.get('/comments',authenticateToken, getAllComments);  
 
 module.exports = router;
