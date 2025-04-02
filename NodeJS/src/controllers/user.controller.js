@@ -61,29 +61,39 @@ exports.updateUserRole = async (req, res, next) => {
 };
 
 /*Delete User*/
-exports.deleteUser = async (req, res, next) => {
-    try {
-        const user = await User.findByPk(req.params.id);
-        if (!user) return res.status(404).json({ message: 'User không tồn tại' });
+exports.deleteUser = async (req, res) => {
+    const userId = req.params.id;
+    const currentUser = req.user;  // Người dùng hiện tại từ token
 
-        // Xóa refresh tokens của user trước
-        await RefreshToken.destroy({ where: { user_id: req.params.id } });
+    try {
+        // Kiểm tra nếu người dùng hiện tại có quyền xóa
+        if (currentUser.role !== 'admin') {
+            return res.status(403).json({ message: 'Bạn không có quyền xóa người dùng này' });
+        }
+
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Người dùng không tồn tại' });
+        }
+
+        // Xóa refresh tokens của user
+        await RefreshToken.destroy({ where: { user_id: userId } });
 
         // Xóa tất cả comment của user
-        await Comment.destroy({ where: { user_id: req.params.id } });
+        await Comment.destroy({ where: { user_id: userId } });
 
         // Nếu user là author, xóa tất cả bài viết của họ
-        if (user.role === 'author') {
-            await Article.destroy({ where: { user_id: req.params.id } });
-        }
+        await Article.destroy({ where: { author_id: userId } });
 
         // Cuối cùng, xóa user
         await user.destroy();
 
-        res.json({ message: 'User và dữ liệu liên quan đã bị xóa thành công' });
+        return res.json({ message: 'Người dùng và dữ liệu liên quan đã bị xóa thành công' });
     } catch (error) {
-        console.error('Error during user deletion:', error);
-        next(error);
+        console.error('Lỗi khi xóa người dùng:', error);
+        return res.status(500).json({ message: 'Lỗi server khi xóa người dùng' });
     }
 };
+
 
