@@ -4,11 +4,13 @@ const {
     getArticleBySlug, 
     createArticle, 
     deleteArticle 
-} = require('../controllers/article.controller');
+} = require('../controllers/article.controller'); 
+
+const authenticationToken = require('../middlewares/authenticateToken'); 
 
 router.get('/', getAllArticles);
 router.get('/:slug', getArticleBySlug);
-router.post('/', createArticle);
-router.get('/', deleteArticle);
+router.post('/', authenticationToken, createArticle);
+router.delete('/:id', authenticationToken, deleteArticle); 
 
 module.exports = router;

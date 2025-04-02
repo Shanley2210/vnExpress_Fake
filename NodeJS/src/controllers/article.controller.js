@@ -1,4 +1,6 @@
 const { Article, User, Category, Comment } = require('../models'); 
+const authenticationToken  = require('../middlewares/authenticateToken');
+const slugify = require('slugify');
 
 exports.getAllArticles = async (req, res) => {
     try {
@@ -54,42 +56,53 @@ exports.getArticleBySlug = async (req, res) => {
 
 exports.createArticle = async (req, res) => {
     try {
-        // Kiểm tra các trường bắt buộc
-        if (!req.body.title || !req.body.content || !req.body.author_id || !req.body.category_id) {
-            return res.status(400).json({
-                success: false,
-                message: 'Thiếu các trường bắt buộc: title, content, author_id, category_id'
+        const user = req.user;
+
+        if (!user) {
+            return res.status(403).json({
+                errCode: 1,
+                errMessage: 'Bạn cần đăng nhập để tạo bài viết'
             });
         }
 
-        // Tạo slug nếu không được cung cấp
-        const slug = req.body.slug || req.body.title.toLowerCase()
-            .replace(/ /g, '-')
-            .replace(/[^\w-]+/g, '');
+        if (user.role !== 'author' && user.role !== 'admin') {
+            return res.status(403).json({
+                errCode: 2,
+                errMessage: 'Bạn không có quyền tạo bài viết'
+            });
+        }
 
-        const articleData = {
-            title: req.body.title,
-            slug: slug,
-            content: req.body.content,
-            thumbnail: req.body.thumbnail || null,
-            author_id: req.body.author_id, // Lấy trực tiếp từ request
-            category_id: req.body.category_id
-        };
+        console.log("User from token:", req.user); 
 
-        const newArticle = await Article.create(articleData);
+        const { title, content, category_id } = req.body;
 
-        return res.status(201).json({
-            success: true,
-            message: 'Bài viết đã được tạo thành công (TEST MODE)',
-            data: newArticle
+        if (!title || !content || !category_id) {
+            return res.status(400).json({
+                errCode: 3,
+                errMessage: 'Tiêu đề, nội dung và danh mục không được để trống'
+            });
+        }
+
+        const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+
+        const newArticle = await Article.create({
+            title,
+            slug,
+            content,
+            category_id,  
+            author_id: user.userId  
         });
 
+        return res.status(201).json({
+            errCode: 0,
+            errMessage: 'Tạo bài viết thành công',
+            data: newArticle
+        });
     } catch (error) {
         console.error('Lỗi khi tạo bài viết:', error);
         return res.status(500).json({
-            success: false,
-            message: 'Đã xảy ra lỗi khi tạo bài viết',
-            error: error.message
+            errCode: 4,
+            errMessage: 'Lỗi server, không thể tạo bài viết'
         });
     }
 };
@@ -107,7 +120,6 @@ exports.deleteArticle = async (req, res) => {
             return res.status(404).json({ message: 'Bài viết không tồn tại' });
         }
 
-        // Kiểm tra quyền xóa bài viết (chỉ tác giả hoặc admin mới có quyền)
         if (article.author_id !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Bạn không có quyền xóa bài viết này' });
         }
