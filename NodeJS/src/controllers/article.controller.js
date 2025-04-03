@@ -1,4 +1,4 @@
-const { Article, User, Category, Comment } = require('../models'); 
+const { Article, User, Category, Comment } = require('../models');
 const slugify = require('slugify');
 
 exports.getAllArticles = async (req, res) => {
@@ -7,20 +7,22 @@ exports.getAllArticles = async (req, res) => {
             include: [
                 {
                     model: User,
-                    as:'author',
-                    attributes: ['id'], 
+                    as: 'author',
+                    attributes: ['id']
                 },
                 {
                     model: Category,
                     as: 'category',
-                    attributes: ['id'], 
+                    attributes: ['id']
                 }
             ],
-            order: [['created_at', 'DESC']] 
+            order: [['created_at', 'DESC']]
         });
         return res.status(200).json(articles);
     } catch (err) {
-        return res.status(500).json({ message: "Lỗi server", error: err.message });
+        return res
+            .status(500)
+            .json({ message: 'Lỗi server', error: err.message });
     }
 };
 
@@ -32,13 +34,13 @@ exports.getArticleBySlug = async (req, res) => {
             include: [
                 {
                     model: User,
-                    as: 'author', 
-                    attributes: ['id'], 
+                    as: 'author',
+                    attributes: ['id', 'display_name']
                 },
                 {
                     model: Category,
-                    as: 'category', 
-                    attributes: ['id'], 
+                    as: 'category',
+                    attributes: ['id', 'name']
                 }
             ]
         });
@@ -49,7 +51,9 @@ exports.getArticleBySlug = async (req, res) => {
 
         return res.status(200).json(article);
     } catch (err) {
-        return res.status(500).json({ message: "Lỗi server", error: err.message });
+        return res
+            .status(500)
+            .json({ message: 'Lỗi server', error: err.message });
     }
 };
 
@@ -71,7 +75,7 @@ exports.createArticle = async (req, res) => {
             });
         }
 
-        console.log("User from token:", req.user); 
+        console.log('User from token:', req.user);
 
         const { title, content, category_id } = req.body;
 
@@ -82,14 +86,17 @@ exports.createArticle = async (req, res) => {
             });
         }
 
-        const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+        const slug = title
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/[^a-z0-9\-]/g, '');
 
         const newArticle = await Article.create({
             title,
             slug,
             content,
-            category_id,  
-            author_id: user.userId  
+            category_id,
+            author_id: user.userId
         });
 
         return res.status(201).json({
@@ -106,12 +113,10 @@ exports.createArticle = async (req, res) => {
     }
 };
 
-
-
 // Xóa bài viết
 exports.deleteArticle = async (req, res) => {
-    const { id } = req.params;  
-    const user = req.user;      
+    const { id } = req.params;
+    const user = req.user;
 
     try {
         // Tìm bài viết kèm theo thông tin tác giả
@@ -155,7 +160,6 @@ exports.deleteArticle = async (req, res) => {
             errCode: 0,
             errMessage: 'Bài viết và các bình luận đã được xóa thành công'
         });
-
     } catch (error) {
         console.error('Lỗi khi xóa bài viết:', error);
         return res.status(500).json({

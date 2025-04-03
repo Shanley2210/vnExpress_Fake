@@ -19,13 +19,13 @@ exports.googleCallback = async (req, res, next) => {
 
         try {
             const accessToken = jwt.sign(
-                { id: user.id, role: user.role },
+                { userId: user.id, role: user.role },
                 process.env.JWT_SECRET,
                 { expiresIn: '15m' }
             );
 
             const refreshToken = jwt.sign(
-                { id: user.id },
+                { userId: user.id },
                 process.env.JWT_SECRET,
                 { expiresIn: '7d' }
             );

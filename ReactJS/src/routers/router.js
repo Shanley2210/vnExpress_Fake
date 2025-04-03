@@ -12,6 +12,14 @@ const routers = [
     {
         path: '/admin',
         component: lazy(() => import('@pages/Admin/Admin'))
+    },
+    {
+        path: '/api/auth/callback',
+        component: lazy(() => import('@components/CallBack/CallBack'))
+    },
+    {
+        path: '/detail/:slug',
+        component: lazy(() => import('@pages/Detail/Detail'))
     }
 ];
 

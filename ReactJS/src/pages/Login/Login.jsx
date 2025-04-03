@@ -3,6 +3,7 @@ import './Login.scss';
 import { signIn } from '@services/authService';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { loginWithGoogle } from '@services/authService';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -37,6 +38,10 @@ function Login() {
             });
     };
 
+    const handleLoginWithGoogle = () => {
+        loginWithGoogle();
+    };
+
     return (
         <div className='login-container'>
             <form className='login-form' onSubmit={handleSubmit}>
@@ -60,6 +65,7 @@ function Login() {
                     />
                 </div>
                 <button type='submit'>Login</button>
+                <div onClick={handleLoginWithGoogle}>Đăng nhập với google</div>
             </form>
         </div>
     );
