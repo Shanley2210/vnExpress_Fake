@@ -112,81 +112,81 @@ exports.registerAccount = async (req, res) => {
     }
 };
 
-exports.verifyEmail = async (req, res) => {
-    try {
-        const { token } = req.body;
-        if (!token) {
-            return res
-                .status(400)
-                .json({ errCode: 1, errMessage: 'Không tìm thấy token' });
-        }
+// exports.verifyEmail = async (req, res) => {
+//     try {
+//         const { token } = req.body;
+//         if (!token) {
+//             return res
+//                 .status(400)
+//                 .json({ errCode: 1, errMessage: 'Không tìm thấy token' });
+//         }
 
-        const user = await User.findOne({
-            where: { verification_token: token }
-        });
+//         const user = await User.findOne({
+//             where: { verification_token: token }
+//         });
 
-        if (!user || user.is_verified) {
-            return res.status(400).json({
-                errCode: 2,
-                errMessage: 'Token không hợp lệ hoặc đã hết hạn'
-            });
-        }
+//         if (!user || user.is_verified) {
+//             return res.status(400).json({
+//                 errCode: 2,
+//                 errMessage: 'Token không hợp lệ hoặc đã hết hạn'
+//             });
+//         }
 
-        await user.update({ is_verified: true, verification_token: null });
-        res.status(200).json({
-            errCode: 0,
-            message: 'Email xác thực thành công!'
-        });
-    } catch (error) {
-        console.error('Lỗi xác thực email:', error);
-        res.status(500).json({ errCode: -1, errMessage: 'Lỗi server' });
-    }
-};
+//         await user.update({ is_verified: true, verification_token: null });
+//         res.status(200).json({
+//             errCode: 0,
+//             message: 'Email xác thực thành công!'
+//         });
+//     } catch (error) {
+//         console.error('Lỗi xác thực email:', error);
+//         res.status(500).json({ errCode: -1, errMessage: 'Lỗi server' });
+//     }
+// };
 
-exports.resendVerification = async (req, res) => {
-    try {
-        const { email } = req.body;
-        if (!email) {
-            return res
-                .status(400)
-                .json({ errCode: 1, errMessage: 'Không tìm thấy email' });
-        }
+// exports.resendVerification = async (req, res) => {
+//     try {
+//         const { email } = req.body;
+//         if (!email) {
+//             return res
+//                 .status(400)
+//                 .json({ errCode: 1, errMessage: 'Không tìm thấy email' });
+//         }
 
-        const user = await User.findOne({ where: { email } });
-        if (!user || user.is_verified) {
-            return res.status(400).json({
-                errCode: 2,
-                errMessage: 'Không tìm thấy người dùng hoặc đã được xác thực'
-            });
-        }
+//         const user = await User.findOne({ where: { email } });
+//         if (!user || user.is_verified) {
+//             return res.status(400).json({
+//                 errCode: 2,
+//                 errMessage: 'Không tìm thấy người dùng hoặc đã được xác thực'
+//             });
+//         }
 
-        const newToken = crypto.randomBytes(32).toString('hex');
-        await user.update({ verification_token: newToken });
+//         const newToken = crypto.randomBytes(32).toString('hex');
+//         await user.update({ verification_token: newToken });
 
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD
-            }
-        });
+//         const transporter = nodemailer.createTransport({
+//             service: 'gmail',
+//             auth: {
+//                 user: process.env.EMAIL_USER,
+//                 pass: process.env.EMAIL_PASSWORD
+//             }
+//         });
 
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Verify Your Email',
-            html: `Click <a href="http://yourdomain.com/api/auth/verify-email?token=${newToken}">here</a> to verify your email.`
-        });
+//         await transporter.sendMail({
+//             from: process.env.EMAIL_USER,
+//             to: email,
+//             subject: 'Verify Your Email',
+//             html: `Click <a href="http://yourdomain.com/api/auth/verify-email?token=${newToken}">here</a> to verify your email.`
+//         });
 
-        res.status(200).json({
-            errCode: 0,
-            message: 'Email xác thuực đã được gửi thành công'
-        });
-    } catch (error) {
-        console.error('Lỗi gửi lại xác thực email:', error);
-        res.status(500).json({ errCode: -1, errMessage: 'Lỗi server' });
-    }
-};
+//         res.status(200).json({
+//             errCode: 0,
+//             message: 'Email xác thuực đã được gửi thành công'
+//         });
+//     } catch (error) {
+//         console.error('Lỗi gửi lại xác thực email:', error);
+//         res.status(500).json({ errCode: -1, errMessage: 'Lỗi server' });
+//     }
+// };
 
 exports.login = async (req, res) => {
     try {
