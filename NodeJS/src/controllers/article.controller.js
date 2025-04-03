@@ -1,5 +1,4 @@
 const { Article, User, Category, Comment } = require('../models'); 
-const authenticationToken  = require('../middlewares/authenticateToken');
 const slugify = require('slugify');
 
 exports.getAllArticles = async (req, res) => {
