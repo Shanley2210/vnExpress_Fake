@@ -36,7 +36,7 @@ exports.googleCallback = async (req, res, next) => {
             });
 
             res.redirect(
-                `${process.env.FRONTEND_URL}/api/auth/callback?accessToken=${accessToken}&refreshToken=${refreshToken}`
+                `${process.env.FRONTEND_URL}/callback?accessToken=${accessToken}&refreshToken=${refreshToken}`
             );
         } catch (error) {
             next(error);
