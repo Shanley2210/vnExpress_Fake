@@ -38,7 +38,8 @@ const Article = sequelize.define(
     {
         timestamps: true,
         createdAt: 'created_at',
-        updatedAt: 'updated_at'
+        updatedAt: 'updated_at',
+        tableName: 'articles'
     }
 );
 
