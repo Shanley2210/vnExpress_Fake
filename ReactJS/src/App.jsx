@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import routers from '@/routers/router';
+import routers from './routers/router';
 import { Suspense } from 'react';
 
 function App() {

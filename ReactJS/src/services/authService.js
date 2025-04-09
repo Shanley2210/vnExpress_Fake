@@ -16,4 +16,4 @@ const logout = (refreshToken) => {
     return axiosClient.post('/api/auth/logout', refreshToken);
 };
 
-export { signIn, loginWithGoogle, logout };
+export { register, signIn, loginWithGoogle, logout };

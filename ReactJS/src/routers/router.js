@@ -1,4 +1,5 @@
 import { lazy } from 'react';
+import Admin from '@pages/Admin/Admin';
 
 const routers = [
     {
@@ -10,9 +11,11 @@ const routers = [
         component: lazy(() => import('@pages/Login/Login'))
     },
     {
-        path: '/admin',
-        component: lazy(() => import('@pages/Admin/Admin'))
+        path: '/register',
+        component: lazy(() => import('@pages/Register/Register'))
     },
+    { path: '/admin', component: Admin },
+    ,
     {
         path: '/api/auth/callback',
         component: lazy(() => import('@components/CallBack/CallBack'))

@@ -36,6 +36,7 @@
 -id (PK) 				INT
 -name 					VARCHAR(255)
 -parent_id				INT
+-articles_id (FK)		INT
 
 ------Bảng refresh_tokens------
 -id (PK)				INT

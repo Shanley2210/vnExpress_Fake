@@ -3,8 +3,6 @@ const {
     googleAuth,
     googleCallback,
     registerAccount,
-    verifyEmail,
-    resendVerification,
     login,
     forgotPassword,
     resetPassword,
@@ -18,8 +16,8 @@ router.get('/google', googleAuth);
 router.get('/google/callback', googleCallback);
 
 router.post('/register', registerAccount);
-router.post('/verify-email', verifyEmail);
-router.post('/resend-verification', resendVerification);
+// router.post('/verify-email', verifyEmail);
+// router.post('/resend-verification', resendVerification);
 
 router.post('/login', login);
 

@@ -2,11 +2,10 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const { RefreshToken, User } = require('../models');
 const bcrypt = require('bcryptjs');
-const { compare } = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const { Op } = require('sequelize');
-const { access } = require('fs');
+// const { access } = require('fs');
 
 exports.googleAuth = passport.authenticate('google', {
     session: false,
@@ -45,6 +44,150 @@ exports.googleCallback = async (req, res, next) => {
     })(req, res, next);
 };
 
+//Bỏ xác thực
+// exports.registerAccount = async (req, res) => {
+//     try {
+//         const { email, password, display_name } = req.body;
+
+//         if (!email || !password || !display_name) {
+//             return res.status(400).json({
+//                 errCode: 1,
+//                 errMessage: 'Vui lòng nhập đầy đủ thông tin'
+//             });
+//         }
+
+//         const existingUser = await User.findOne({ where: { email } });
+//         if (existingUser) {
+//             return res
+//                 .status(400)
+//                 .json({ errCode: 2, errMessage: 'Email đã tồn tại' });
+//         }
+
+//         const verificationToken = crypto.randomBytes(32).toString('hex');
+
+//         const newUser = await User.create({
+//             email,
+//             password,
+//             display_name,
+//             role: 'reader',
+//             is_verified: false,
+//             verification_token: verificationToken
+//         });
+
+//         const transporter = nodemailer.createTransport({
+//             service: 'gmail',
+//             auth: {
+//                 user: process.env.EMAIL_USER,
+//                 pass: process.env.EMAIL_PASSWORD
+//             }
+//         });
+
+//         const userResponse = {
+//             id: newUser.id,
+//             email: newUser.email,
+//             display_name: newUser.display_name,
+//             role: newUser.role
+//         };
+
+//         await transporter.sendMail({
+//             from: process.env.EMAIL_USER_NAME,
+//             to: email,
+//             subject: 'Verify Your Email',
+//             //Kiểm tra lại
+//             html: `Click <a href=" ${process.env.FRONTEND_URL}/api/auth/verify-email?token=${verificationToken}">here</a> to verify your email.`
+//         });
+
+//         res.status(201).json({
+//             errCode: 0,
+//             message: 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực',
+//             // verificationToken,
+//             user: userResponse
+//         });
+//     } catch (error) {
+//         console.error('Lỗi đăng ký:', error);
+//         res.status(500).json({
+//             errCode: -1,
+//             errMessage: 'Lỗi server'
+//         });
+//     }
+// };
+
+// exports.verifyEmail = async (req, res) => {
+//     try {
+//         const { token } = req.body;
+//         if (!token) {
+//             return res
+//                 .status(400)
+//                 .json({ errCode: 1, errMessage: 'Không tìm thấy token' });
+//         }
+
+//         const user = await User.findOne({
+//             where: { verification_token: token }
+//         });
+
+//         if (!user || user.is_verified) {
+//             return res.status(400).json({
+//                 errCode: 2,
+//                 errMessage: 'Token không hợp lệ hoặc đã hết hạn'
+//             });
+//         }
+
+//         await user.update({ is_verified: true, verification_token: null });
+//         res.status(200).json({
+//             errCode: 0,
+//             message: 'Email xác thực thành công!'
+//         });
+//     } catch (error) {
+//         console.error('Lỗi xác thực email:', error);
+//         res.status(500).json({ errCode: -1, errMessage: 'Lỗi server' });
+//     }
+// };
+
+// exports.resendVerification = async (req, res) => {
+//     try {
+//         const { email } = req.body;
+//         if (!email) {
+//             return res
+//                 .status(400)
+//                 .json({ errCode: 1, errMessage: 'Không tìm thấy email' });
+//         }
+
+//         const user = await User.findOne({ where: { email } });
+//         if (!user || user.is_verified) {
+//             return res.status(400).json({
+//                 errCode: 2,
+//                 errMessage: 'Không tìm thấy người dùng hoặc đã được xác thực'
+//             });
+//         }
+
+//         const newToken = crypto.randomBytes(32).toString('hex');
+//         await user.update({ verification_token: newToken });
+
+//         const transporter = nodemailer.createTransport({
+//             service: 'gmail',
+//             auth: {
+//                 user: process.env.EMAIL_USER,
+//                 pass: process.env.EMAIL_PASSWORD
+//             }
+//         });
+
+//         await transporter.sendMail({
+//             from: process.env.EMAIL_USER,
+//             to: email,
+//             subject: 'Verify Your Email',
+//             html: `Click <a href="http://yourdomain.com/api/auth/verify-email?token=${newToken}">here</a> to verify your email.`
+//         });
+
+//         res.status(200).json({
+//             errCode: 0,
+//             message: 'Email xác thuực đã được gửi thành công'
+//         });
+//     } catch (error) {
+//         console.error('Lỗi gửi lại xác thực email:', error);
+//         res.status(500).json({ errCode: -1, errMessage: 'Lỗi server' });
+//     }
+// };
+
 exports.registerAccount = async (req, res) => {
     try {
         const { email, password, display_name } = req.body;
@@ -63,23 +206,15 @@ exports.registerAccount = async (req, res) => {
                 .json({ errCode: 2, errMessage: 'Email đã tồn tại' });
         }
 
-        const verificationToken = crypto.randomBytes(32).toString('hex');
+        // const salt = await bcrypt.genSalt(10);
+        // const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = await User.create({
             email,
-            password,
+            password: password,
             display_name,
             role: 'reader',
-            is_verified: false,
-            verification_token: verificationToken
-        });
-
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD
-            }
+            is_verified: true
         });
 
         const userResponse = {
@@ -89,18 +224,9 @@ exports.registerAccount = async (req, res) => {
             role: newUser.role
         };
 
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER_NAME,
-            to: email,
-            subject: 'Verify Your Email',
-            //Kiểm tra lại
-            html: `Click <a href=" ${process.env.FRONTEND_URL}/api/auth/verify-email?token=${verificationToken}">here</a> to verify your email.`
-        });
-
         res.status(201).json({
             errCode: 0,
-            message: 'Đăng ký thành công! Vui lòng kiểm tra email để xác thực',
-            // verificationToken,
+            message: 'Đăng ký thành công!',
             user: userResponse
         });
     } catch (error) {
@@ -109,82 +235,6 @@ exports.registerAccount = async (req, res) => {
             errCode: -1,
             errMessage: 'Lỗi server'
         });
-    }
-};
-
-exports.verifyEmail = async (req, res) => {
-    try {
-        const { token } = req.body;
-        if (!token) {
-            return res
-                .status(400)
-                .json({ errCode: 1, errMessage: 'Không tìm thấy token' });
-        }
-
-        const user = await User.findOne({
-            where: { verification_token: token }
-        });
-
-        if (!user || user.is_verified) {
-            return res.status(400).json({
-                errCode: 2,
-                errMessage: 'Token không hợp lệ hoặc đã hết hạn'
-            });
-        }
-
-        await user.update({ is_verified: true, verification_token: null });
-        res.status(200).json({
-            errCode: 0,
-            message: 'Email xác thực thành công!'
-        });
-    } catch (error) {
-        console.error('Lỗi xác thực email:', error);
-        res.status(500).json({ errCode: -1, errMessage: 'Lỗi server' });
-    }
-};
-
-exports.resendVerification = async (req, res) => {
-    try {
-        const { email } = req.body;
-        if (!email) {
-            return res
-                .status(400)
-                .json({ errCode: 1, errMessage: 'Không tìm thấy email' });
-        }
-
-        const user = await User.findOne({ where: { email } });
-        if (!user || user.is_verified) {
-            return res.status(400).json({
-                errCode: 2,
-                errMessage: 'Không tìm thấy người dùng hoặc đã được xác thực'
-            });
-        }
-
-        const newToken = crypto.randomBytes(32).toString('hex');
-        await user.update({ verification_token: newToken });
-
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD
-            }
-        });
-
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Verify Your Email',
-            html: `Click <a href="http://yourdomain.com/api/auth/verify-email?token=${newToken}">here</a> to verify your email.`
-        });
-
-        res.status(200).json({
-            errCode: 0,
-            message: 'Email xác thuực đã được gửi thành công'
-        });
-    } catch (error) {
-        console.error('Lỗi gửi lại xác thực email:', error);
-        res.status(500).json({ errCode: -1, errMessage: 'Lỗi server' });
     }
 };
 
@@ -223,7 +273,7 @@ exports.login = async (req, res) => {
             });
         }
 
-        const isPasswordValid = await compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
             return res.status(401).json({ error: 'Mật khẩu không đúng' });

@@ -41,12 +41,16 @@ const Header = () => {
             <div className='header'>
                 <h2 className='homepage-title'>VNExpress_Fake</h2>
                 {!dataUserInfo.display_name ? (
-                    <button
-                        className='login-button'
-                        onClick={() => navigate('/login')}
-                    >
-                        Đăng Nhập
-                    </button>
+                    <div>
+                        <button
+                            className='login-button'
+                            onClick={() => navigate('/login')}
+                            style={{ marginRight: '10px' }}
+                        >
+                            Đăng Nhập
+                        </button>
+                        <button className='login-button'>Đăng Ký</button>
+                    </div>
                 ) : (
                     <div>
                         <div>{dataUserInfo.display_name} </div>
