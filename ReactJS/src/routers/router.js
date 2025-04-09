@@ -17,7 +17,7 @@ const routers = [
     { path: '/admin', component: Admin },
     ,
     {
-        path: '/api/auth/callback',
+        path: '/callback',
         component: lazy(() => import('@components/CallBack/callback'))
     },
     {
