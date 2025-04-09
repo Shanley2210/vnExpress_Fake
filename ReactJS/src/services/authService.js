@@ -9,7 +9,8 @@ const register = async (data) => {
 };
 
 const loginWithGoogle = () => {
-    window.location.href = 'http://localhost:3000/api/auth/google';
+    window.location.href =
+        'https://vnexpress-fake.onrender.com/api/auth/google';
 };
 
 const logout = (refreshToken) => {
