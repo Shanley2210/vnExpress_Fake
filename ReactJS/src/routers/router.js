@@ -18,7 +18,7 @@ const routers = [
     ,
     {
         path: '/callback',
-        component: lazy(() => import('@components/CallBack/callback'))
+        component: lazy(() => import('@components/CallBack/Callback'))
     },
     {
         path: '/detail/:slug',
