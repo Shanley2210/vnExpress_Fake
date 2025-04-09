@@ -16,5 +16,12 @@ export default defineConfig({
             '@layouts': path.resolve(__dirname, 'src/layouts'),
             '@clients': path.resolve(__dirname, 'src/clients')
         }
+    },
+    base: '/',
+    build: {
+        outDir: 'dist'
+    },
+    server: {
+        historyApiFallback: true
     }
 });
