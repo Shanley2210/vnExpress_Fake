@@ -77,7 +77,7 @@ exports.createArticle = async (req, res) => {
 
         console.log('User from token:', req.user);
 
-        const { title, content, category_id } = req.body;
+        const { title, content, category_id, thumbnail } = req.body;
 
         if (!title || !content || !category_id) {
             return res.status(400).json({
@@ -91,13 +91,15 @@ exports.createArticle = async (req, res) => {
             .replace(/\s+/g, '-')
             .replace(/[^a-z0-9\-]/g, '');
 
-        const newArticle = await Article.create({
-            title,
-            slug,
-            content,
-            category_id,
-            author_id: user.userId
-        });
+            const newArticle = await Article.create({
+                title,
+                slug,
+                content,
+                category_id,
+                thumbnail, // 👈 Thêm dòng này
+                author_id: user.userId
+            });
+            
 
         return res.status(201).json({
             errCode: 0,
