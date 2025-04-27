@@ -49,7 +49,12 @@ const Header = () => {
                         >
                             Đăng Nhập
                         </button>
-                        <button className='login-button'>Đăng Ký</button>
+                        <button
+                            className='login-button'
+                            onClick={() => navigate('/register')}
+                        >
+                            Đăng Ký
+                        </button>
                     </div>
                 ) : (
                     <div>
