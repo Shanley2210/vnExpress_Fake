@@ -11,4 +11,5 @@ router.get('/articles/:slug/comments', getCommentsByArticleSlug);
 router.post('/articles/:slug/comments', authenticateToken, addCommentToArticle);
 router.delete('/comments/:id', authenticateToken, deleteComment);
 
+
 module.exports = router;
