@@ -25,7 +25,7 @@ function HomePage() {
         <>
             <Header />
             <div className='homepage-container'>
-                <h2 className='homepage-title'>Trang Tin Tức</h2>
+                <h2 className='homepage-title'>Tin Tức</h2>
                 <div className='news-list'>
                     {dataArticles.map((item) => (
                         <div
