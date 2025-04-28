@@ -39,7 +39,7 @@ const Header = () => {
   return (
     <div className="homepage-container">
       <div className="header">
-        <h2 className="homepage-title">VNExpress_Fake</h2>
+        <h2 className="homepage-title">VNExpressFake</h2>
         {!dataUserInfo.display_name ? (
           <div>
             <button
