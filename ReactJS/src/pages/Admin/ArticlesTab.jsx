@@ -97,7 +97,7 @@ export default function ArticlesTab() {
         onClick={() => setShowAddForm(prev => !prev)} 
         sx={{ mb: 2 }}
       >
-        {showAddForm ? 'Ẩn Form' : 'Thêm Bài Viết'}
+        {showAddForm ? 'Đóng' : 'Thêm Bài Viết'}
       </Button>
 
       {/* Form thêm bài viết (ẩn/hiện theo showAddForm) */}
