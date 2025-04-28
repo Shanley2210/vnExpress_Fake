@@ -24,7 +24,9 @@ const Article = sequelize.define(
             references: {
                 model: 'Users',
                 key: 'id'
-            }
+            },
+            onDelete: 'CASCADE', // 👈 thêm dòng này
+            onUpdate: 'CASCADE'
         },
         category_id: {
             type: DataTypes.INTEGER,
@@ -32,7 +34,9 @@ const Article = sequelize.define(
             references: {
                 model: 'Categories',
                 key: 'id'
-            }
+            },
+            onDelete: 'CASCADE', // 👈 thêm dòng này
+            onUpdate: 'CASCADE'
         }
     },
     {

@@ -14,7 +14,9 @@ const Comment = sequelize.define(
             references: {
                 model: 'Users',
                 key: 'id'
-            }
+            },
+            onDelete: 'CASCADE', // 👈 Thêm dòng này
+            onUpdate: 'CASCADE'
         },
         article_id: {
             type: DataTypes.INTEGER,
@@ -22,14 +24,18 @@ const Comment = sequelize.define(
             references: {
                 model: 'Articles',
                 key: 'id'
-            }
+            },
+            onDelete: 'CASCADE', // 👈 Thêm dòng này
+            onUpdate: 'CASCADE'
         },
         parent_id: {
             type: DataTypes.INTEGER,
             references: {
                 model: 'Comments',
                 key: 'id'
-            }
+            },
+            onDelete: 'CASCADE', // 👈 Thêm dòng này
+            onUpdate: 'CASCADE'
         }
     },
     {
