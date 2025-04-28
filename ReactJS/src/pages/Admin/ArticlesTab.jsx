@@ -18,17 +18,17 @@ export default function ArticlesTab() {
   const [slug, setSlug] = useState('');
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('');
-  const [thumbnail, setThumbnail] = useState('');  // Add state for thumbnail URL
-  const [activeTab, setActiveTab] = useState('articles');
+  const [thumbnail, setThumbnail] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const getAuthHeaders = () => {
     const token = Cookies.get('accessToken');
     return token ? { Authorization: `Bearer ${token}` } : null;
   };
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchArticles(); }, []);
 
-  const fetch = async () => {
+  const fetchArticles = async () => {
     const headers = getAuthHeaders();
     if (!headers) return;
     try {
@@ -52,23 +52,21 @@ export default function ArticlesTab() {
       }, { headers });
       toast.success('Đã tạo bài viết!');
       setTitle(''); setSlug(''); setContent(''); setCategory(''); setThumbnail('');
-      fetch();  // Gọi lại fetch để cập nhật danh sách
+      fetchArticles();
+      setShowAddForm(false); // Ẩn form sau khi thêm
     } catch {
       toast.error('Tạo bài viết thất bại');
     }
   };
 
   const handleDelete = async (id) => {
-    // Xác nhận trước khi xóa bài viết
     const isConfirmed = window.confirm('Bạn chắc chắn muốn xóa bài viết này?');
     if (!isConfirmed) return;
-  
     const headers = getAuthHeaders();
     if (!headers) {
       toast.error('Chưa đăng nhập');
       return;
     }
-  
     try {
       await axios.delete(`/api/articles/${id}`, { headers });
       setArticles(prev => prev.filter(article => article.id !== id));
@@ -78,7 +76,6 @@ export default function ArticlesTab() {
       toast.error(error.response?.data?.errMessage || 'Xóa bài viết thất bại');
     }
   };
-  
 
   const openDetail = (row) => {
     setSelectedArticle(row);
@@ -92,85 +89,91 @@ export default function ArticlesTab() {
 
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', p: 4 }}>
-      {/* Articles Tab */}
-      {activeTab === 'articles' && (
-        <Box>
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>Thêm Bài Viết Mới</Typography>
-          <Paper sx={{ p: 3, mb: 4, borderRadius: 2, boxShadow: 3 }} elevation={3}>
-            <form onSubmit={handleAdd} style={{ display: 'grid', gap: '16px' }}>
-              <TextField label="Tiêu đề" value={title} onChange={e => setTitle(e.target.value)} fullWidth />
-              <TextField label="Slug" value={slug} onChange={e => setSlug(e.target.value)} fullWidth />
-              <TextField multiline rows={4} label="Nội dung" value={content} onChange={e => setContent(e.target.value)} fullWidth />
-              <TextField label="Thumbnail URL" value={thumbnail} onChange={e => setThumbnail(e.target.value)} fullWidth />
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>Quản lý Bài Viết</Typography>
 
-              <FormControl fullWidth>
-                <InputLabel>Danh mục</InputLabel>
-                <Select value={category} onChange={e => setCategory(e.target.value)} label="Danh mục">
-                  <MenuItem value="1">Công nghệ</MenuItem>
-                  <MenuItem value="2">Khoa học</MenuItem>
-                  <MenuItem value="3">Sức khỏe</MenuItem>
-                  <MenuItem value="4">Kinh doanh</MenuItem>
-                  <MenuItem value="5">Giáo dục</MenuItem>
-                  <MenuItem value="6">Lập trình</MenuItem>
-                  <MenuItem value="7">Vật lý</MenuItem>
-                  <MenuItem value="8">Y học</MenuItem>
-                  <MenuItem value="9">Tài chính</MenuItem>
-                  <MenuItem value="10">E-learning</MenuItem>
-                </Select>
-              </FormControl>
-              <Button variant="contained" type="submit">Thêm Bài Viết</Button>
-            </form>
-          </Paper>
+      {/* Nút mở/ẩn form thêm bài viết */}
+      <Button 
+        variant="contained" 
+        onClick={() => setShowAddForm(prev => !prev)} 
+        sx={{ mb: 2 }}
+      >
+        {showAddForm ? 'Ẩn Form' : 'Thêm Bài Viết'}
+      </Button>
 
-          <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold' }}>Quản lý Bài Viết</Typography>
-          <Paper sx={{ p: 2, borderRadius: 2, boxShadow: 2 }} elevation={3}>
-            <DataGrid
-              autoHeight pageSize={5}
-              rows={articles} getRowId={r => r.id}
-              columns={[
-                { field: 'id', headerName: 'ID', width: 70 },
-                { field: 'title', headerName: 'Tiêu đề', width: 250 },
-                { field: 'slug', headerName: 'Slug', width: 200 },
-                { field: 'content', headerName: 'Nội dung', width: 300 },
-                { field: 'thumbnail', headerName: 'Thumbnail', width: 300 },
-                { field: 'category_id', headerName: 'Danh mục', width: 120 },
-                { field: 'created_at', headerName: 'Ngày tạo', width: 180 },
-                {
-                  field: 'view', headerName: 'Xem', width: 100,
-                  renderCell: params => (
-                    <Button variant="contained" onClick={() => openDetail(params.row)}>Xem</Button>
-                  )
-                },
-                {
-                  field: 'delete', headerName: 'Xóa', width: 100,
-                  renderCell: params => (
-                    <Button color="error" variant="contained" startIcon={<DeleteIcon />} onClick={() => handleDelete(params.row.id)}>
-                      Xóa
-                    </Button>
-                  )
-                }
-              ]}
-            />
-          </Paper>
-
-          {/* Article Details Dialog */}
-          <Dialog open={openDialog} onClose={closeDetail} fullWidth maxWidth="md">
-            <DialogTitle>Chi tiết Bài Viết</DialogTitle>
-            <DialogContent>
-              <Typography variant="h6">{selectedArticle?.title}</Typography>
-              {selectedArticle?.thumbnail && (
-                <Box component="img" src={selectedArticle.thumbnail} alt="thumbnail" sx={{ width: '100%', mt: 2 }} />
-              )}
-              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', mt: 2 }}>
-                {selectedArticle?.content}
-              </Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={closeDetail}>Đóng</Button>
-            </DialogActions>
-          </Dialog>
-        </Box>
+      {/* Form thêm bài viết (ẩn/hiện theo showAddForm) */}
+      {showAddForm && (
+        <Paper sx={{ p: 3, mb: 4, borderRadius: 2, boxShadow: 3 }} elevation={3}>
+          <form onSubmit={handleAdd} style={{ display: 'grid', gap: '16px' }}>
+            <TextField label="Tiêu đề" value={title} onChange={e => setTitle(e.target.value)} fullWidth />
+            <TextField label="Slug" value={slug} onChange={e => setSlug(e.target.value)} fullWidth />
+            <TextField multiline rows={4} label="Nội dung" value={content} onChange={e => setContent(e.target.value)} fullWidth />
+            <TextField label="Thumbnail URL" value={thumbnail} onChange={e => setThumbnail(e.target.value)} fullWidth />
+            <FormControl fullWidth>
+              <InputLabel>Danh mục</InputLabel>
+              <Select value={category} onChange={e => setCategory(e.target.value)} label="Danh mục">
+                <MenuItem value="1">Công nghệ</MenuItem>
+                <MenuItem value="2">Khoa học</MenuItem>
+                <MenuItem value="3">Sức khỏe</MenuItem>
+                <MenuItem value="4">Kinh doanh</MenuItem>
+                <MenuItem value="5">Giáo dục</MenuItem>
+                <MenuItem value="6">Lập trình</MenuItem>
+                <MenuItem value="7">Vật lý</MenuItem>
+                <MenuItem value="8">Y học</MenuItem>
+                <MenuItem value="9">Tài chính</MenuItem>
+                <MenuItem value="10">E-learning</MenuItem>
+              </Select>
+            </FormControl>
+            <Button variant="contained" type="submit">Lưu Bài Viết</Button>
+          </form>
+        </Paper>
       )}
+
+      {/* Danh sách bài viết */}
+      <Paper sx={{ p: 2, borderRadius: 2, boxShadow: 2 }} elevation={3}>
+      <DataGrid
+  autoHeight
+  pageSize={5}
+  rows={articles}
+  getRowId={(row) => row.id}
+  columns={[
+    { field: 'id', headerName: 'ID', width: 50 },
+    { field: 'title', headerName: 'Tiêu đề', width: 200 },
+    { field: 'slug', headerName: 'Slug', width: 100 },
+    { field: 'content', headerName: 'Nội dung', width: 300 },
+    { field: 'thumbnail', headerName: 'Thumbnail', width: 100 },
+    { field: 'category_id', headerName: 'Danh mục', width: 50 },
+    { field: 'created_at', headerName: 'Ngày tạo', width: 100 },
+    {
+      field: 'actions', headerName: 'Hành động', width: 200, sortable: false,
+      renderCell: (params) => (
+        <Box sx={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
+          <Button variant="contained" size="small" onClick={() => openDetail(params.row)}>Xem</Button>
+          <Button color="error" variant="contained" size="small" startIcon={<DeleteIcon />} onClick={() => handleDelete(params.row.id)}>
+            Xóa
+          </Button>
+        </Box>
+      )
+    }      
+  ]}
+/>
+      </Paper>
+
+      {/* Dialog xem chi tiết bài viết */}
+      <Dialog open={openDialog} onClose={closeDetail} fullWidth maxWidth="md">
+        <DialogTitle>Chi tiết Bài Viết</DialogTitle>
+        <DialogContent>
+          <Typography variant="h6">{selectedArticle?.title}</Typography>
+          {selectedArticle?.thumbnail && (
+            <Box component="img" src={selectedArticle.thumbnail} alt="thumbnail" sx={{ width: '100%', mt: 2 }} />
+          )}
+          <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', mt: 2 }}>
+            {selectedArticle?.content}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDetail}>Đóng</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
